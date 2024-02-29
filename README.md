@@ -11,7 +11,7 @@ The requirements are as follows:
 1. The Salesforce Marketing Cloud (SFMC) server can only be accessed using SFTP protocol
 2. In case of failure of download of data - includes both scenarios:  no download and incomplete download, the process should be retried for given number of retry attempts, for instance 3 
 3. To ensure complete download we cannot measure file size on the SFMC server therefore would have to parse the CURL logs during download
-4. The download directory should be in the format : `<OUTPUT_DIR>\<object_name>\<object_file>` for instance `\apps\nfs_load\output\account\account_20240201.csv.gz`
+4. The download directory should be in the format : `<OUTPUT_DIR>\<object_name>\<object_file>` for instance `\apps\nfsload\output\account\account_20240201.csv.gz`
 5. The data files should be compressed in `.gz` format so that they occupy less space
 6. In case of failure of upload the process should be retried for given number of retry attempts, for instance 3 
 7. Before upload, the current timestamp should be added in the object folder name and object file name in the format YYYY-MM-DDTHH:MM:SS for backtracking purposes therefore the format should be `s3://<bucket_name>/<folder_name>/<object_name-YYYY-MM-DDTHH:MM:SS>/<object_file.csv.gz-YYYY-MM-DDTHH:MM:SS>` for instance `s3://appsbucket/ingestion/sfmc/objects/account-2024-02-01T12:02:34/account.csv.gz-2024-02-01T12:02:34`
