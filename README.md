@@ -367,5 +367,5 @@ fi
 The architecture diagram below would make the understanding of the entire solution more crisp
 
 <p align="center">
-  <img src="/assets/scd_mismatch_results.png" />
+  <img src="/assets/sales_force_marketing_cloud_(sfmc)_to_unix_server_to_s3_etl.png" />
 </p>
