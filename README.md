@@ -10,13 +10,14 @@ The requirements are as follows:
 
 1. The Salesforce Marketing Cloud (SFMC) server can only be accessed using SFTP protocol
 2. In case of failure of download of data - includes both scenarios:  no download and incomplete download, the process should be retried for given number of retry attempts, for instance 3 
-3. To ensure complete download we cannot measure file size on the SFMC server therefore would have to parse the CURL logs during download
-4. The download directory should be in the format : `<OUTPUT_DIR>\<object_name>\<object_file>` for instance `\apps\nfsload\output\account\account_20240201.csv.gz`
+3. To ensure complete download we cannot measure file size on the SFMC server therefore we have to parse the CURL logs during download
+4. The download path should be in the format : `<OUTPUT_DIR>\<object_name>\<object_file>` for instance `\apps\nfsload\output\account\account_20240201.csv.gz`
 5. The data files should be compressed in `.gz` format so that they occupy less space
 6. In case of failure of upload the process should be retried for given number of retry attempts, for instance 3 
-7. Before upload, the current timestamp should be added in the object folder name and object file name in the format YYYY-MM-DDTHH:MM:SS for backtracking purposes therefore the format should be `s3://<bucket_name>/<folder_name>/<object_name-YYYY-MM-DDTHH:MM:SS>/<object_file.csv.gz-YYYY-MM-DDTHH:MM:SS>` for instance `s3://appsbucket/ingestion/sfmc/objects/account-2024-02-01T12:02:34/account.csv.gz-2024-02-01T12:02:34`
+7. Before upload, the current timestamp should be added in the object folder name and object file name in the format YYYY-MM-DDTHH:MM:SS for backtracking purposes therefore the upload file path format should be `s3://<bucket_name>/<folder_name>/<object_name-YYYY-MM-DDTHH:MM:SS>/<object_file.csv.gz-YYYY-MM-DDTHH:MM:SS>` for instance `s3://appsbucket/ingestion/sfmc/objects/account-2024-02-01T12:02:34/account.csv.gz-2024-02-01T12:02:34`
 8. After the upload process, the files should be moved to archive folder so that they are not processed again 
-9. The retries should be exponential, every subsequent retry should be made after longer amount of time than the first. For instance, if the first retry is made after 30 seconds then the second retry should be made after 60 and third retry should be made after 90 seconds and so on and so forth.
+9. The retries should be exponential, every subsequent retry should be made after longer amount of time than the first. For instance, if the first retry is made after 30 seconds then the second retry should be made after 60 and third retry should be made after 90 seconds and so on and so forth
+10. The solution should also accommodate backfilling - the process of filling in missing data from the past
 
 # Design and Implementation
 To achieve the above, we would require two scripts:
@@ -36,7 +37,6 @@ The `download_from_sfmc.sh` script does the following:
     a. Upon failure, the script retries for the provided number of allowed retries - the retries are based on exponential backoff, after every failure the time after which the retry occurs is increased by 30 sec * number of retry attempt  
     b. if after the provided number of retries, the object is not downloaded the script errors out telling whether the last retry failed because of partial download (% download mentioned in the error) or either because the download never got started due network congestion/issues etc
 7.  For better security, the username and password for the SFMC user is read from a separate config file in the script and therefore the values are not hardcoded
-8. The solution should also accommodate backfilling - the process of filling in missing data from the past
 
 ```bash
 echo "SFMC Object Download Script Started........."  
