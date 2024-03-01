@@ -365,3 +365,7 @@ fi
 ```
 
 The architecture diagram below would make the understanding of the entire solution more crisp
+
+<p align="center">
+  <img src="/assets/scd_mismatch_results.png" />
+</p>
